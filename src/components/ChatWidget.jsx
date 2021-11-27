@@ -1,9 +1,8 @@
 import React from "react";
 import "../styles/chat_widget.scss";
-// import messageData from "../data/messages";
 import { useState } from "react";
 import { useSelector, useDispatch } from 'react-redux'
-import add_message from '../features/message_state'
+import { createStore } from 'redux'
 
 
 function ChatWidget() {
@@ -92,24 +91,83 @@ function ChatWidgetMessage(props) {
 function ChatWidgetInput() {
   const [message, setMessage] = useState("");
   function submitMessage(e) {
-    e.preventDefault();
-    addMessage({
+    console.log(e);
+    // addMessage({
 
-        id: 3,
-        user_id: 1,
-        message: message,
-        created_at: '2020-06-01T00:00:00.000Z',
-    })
-    setMessage("");
+    //     id: 3,
+    //     user_id: 1,
+    //     message: message,
+    //     created_at: '2020-06-01T00:00:00.000Z',
+    // })
+    // setMessage("");
   }
   return (
     <div className="chat_widget_input">
       <input value={message} onInput={e => setMessage(e.target.value)} type="text" placeholder="Type a message" className="chat_widget_input_text" />
-      <button className="chat_widget_input_button" onClick={submitMessage(message)}>
+      <button className="chat_widget_input_button" onSubmit={submitMessage(message)}>
         <i className="fas fa-paper-plane"></i>
       </button>
     </div>
   );
 }
+
+
+
+// store > global state
+
+
+
+
+// actions > functions that change the state
+
+const addmessage = (message) => {
+  return {
+    type: 'ADD_MESSAGE',
+    payload: message
+  }
+}
+
+// reducer > function that takes in the current state and an action and returns a new state
+
+const reducer = (state = [], action) => {
+  switch (action.type) {
+    case 'ADD_MESSAGE':
+      return {
+        ...state,
+        allMessages: [...state.allMessages, action.payload]
+      }
+    default:
+      return state
+  }
+}
+
+let store = createStore(reducer)
+
+store.subscribe(() => {
+
+    console.log("store.getState()")
+})
+
+// dispatch > function that calls the reducer
+
+// const dispatch = (action) => {
+//   store = reducer(store, action)
+// }
+
+store.dispatch(addmessage({
+
+    id: 3,
+    user_id: 1,
+    message: 'Hello',
+    created_at: '2020-06-01T00:00:00.000Z',
+}))
+
+
+
+
+
+
+
+
 
 export default ChatWidget;
